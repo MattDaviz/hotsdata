@@ -1,11 +1,7 @@
----
-title: "HOTS LOGS Scraper"
-author: "Matthew Davis"
-date: "January 18, 2017"
-output: 
-  html_document: 
-    keep_md: yes
----
+```{r}
+mean(runif(1:10))
+sum(runif(1:10))
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
