@@ -25,6 +25,14 @@ test <- readHTMLTable(url)
 test <- as.data.frame(test[2])
 test <- test[,2:9]
 colnames(test) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'delta.Win.Percent' ,'Role', 'Specialty')
+# Clean up scraped data
+test$hero <- gsub('%20', ' ', test$hero)
+test$hero <- gsub('%27', "'", test$hero)
+test$Games.Played <- gsub(',', '', test$Games.Played)
+test$Win.Percent <- gsub('%', '', test$Win.Percent)
+test$Games.Played <- as.numeric(test$Games.Played)
+test$Win.Percent <- as.numeric(test$Win.Percent) * .01
+test$hero <- as.factor(test$hero)
 
 # Set up template for scraping
 utmp <- 'https://www.hotslogs.com/sitewide/HeroDetails?Hero='
@@ -39,16 +47,16 @@ names <- c("Artanis", "Samuro", "The%20Lost%20Vikings", "Sgt.%20Hammer", "Ragnar
            "Johanna", "Arthas", "Chen", "E.T.C.", "Tychus", "Illidan", "Li%20Li", 
            "Chromie", "Tassadar", "Zeratul", "Uther", 
            "Leoric", "Auriel", "Li-Ming", "Muradin", "Falstad", "Alarak", 
-           "Sonya", "Abathur", "Stitches", "Medivh", "Zagara", "Greymane")
+            "Abathur", "Stitches", "Medivh", "Sonya", "Zagara", "Greymane", "Murky")
 
-m <- readHTMLTable(getURL('https://www.hotslogs.com/sitewide/HeroDetails?Hero=Murky'))
-m <- as.data.frame(m[5])
-m <- m[,c(2:4)]
-m$hero <- 'Murky'
+#m <- readHTMLTable(getURL('https://www.hotslogs.com/sitewide/HeroDetails?Hero=Murky'))
+#m <- as.data.frame(m[5])
+#m <- m[,c(2:4)]
+#m$hero <- 'Murky'
 
 loopnames <- gsub('%20', ' ', names)
 loopnames <- gsub('%27', "'", loopnames)
-loopnames <- c(loopnames,)
+#loopnames <- c(loopnames)
 
 # Set up empty vectors to deposit scraped data frames into
 tables <- vector('list', length(names))
@@ -60,12 +68,12 @@ for(i in 1:length(names)) {
   tablesnew[[i]] <- tables[[i]][[6]][,c(2:4)]
   tablesnew[[i]]$hero <- names[[i]]
   # Use a Sys.sleep() command to be nice to a host's domain
-  Sys.sleep(3)
+  #Sys.sleep(3)
 }
 
 # Convert nested data frames into single data frame
 mapdata <- ldply(tablesnew, data.frame)
-mapdata <- rbind(mapdata, m)
+#mapdata <- rbind(mapdata, m)
 
 # Clean up scraped mapdata
 mapdata$hero <- gsub('%20', ' ', mapdata$hero)
@@ -83,7 +91,7 @@ mapdata <- mapdata %>%
   arrange(Win.Percent)
 
 # Set up color palette for plotting based on roles
-hotscolors <- c('red2', 'darkorchid2', 'deepskyblue2', 'blue3')
+#hotscolors <- c('red2', 'darkorchid2', 'deepskyblue2', 'blue3')
 
 # Subset mapdata based on map
 boe <- mapdata[mapdata$Map.Name == 'Battlefield of Eternity',]
@@ -142,6 +150,13 @@ lapply(maps, function(x) {
   
   # Open the file for the plot to be written to
   jpeg(output_filename, height = 3150, width = 2400, res = 300, quality = 400)
+
+  x <- left_join(x, test[,c(1,5)], by = 'hero')
+  colnames(x) <- c('Map.Name', 'Games.Played', 'Win.Percent', 'hero', 'Role', 'Specialty', 'avg.winrate')
+  
+  ann_text <- data.frame(Win.Percent = .65, hero = 'Varian', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$avg.winrate[x$hero == 'Varian'], z = x$Win.Percent[x$hero == "Varian"], games = x$Games.Played[x$hero == "Varian"])
+  
+  ann_line <- data.frame(hero = 'Varian', x = 'Varian', xend = 'Varian', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$Win.Percent[x$hero == 'Varian'] * 1.08, yend = .625, Win.Percent = x$Win.Percent[x$hero=='Varian'])
   
   # Order data
   x <- x %>%
@@ -151,14 +166,15 @@ lapply(maps, function(x) {
   # Plot
   plot <- ggplot(data = x, aes(x = hero, y = Win.Percent, fill = Role, group = Role)) +
     geom_bar(aes(alpha = Games.Played), stat = 'identity', width = 0.5, color = 'grey75') +
+    geom_point(aes(y = avg.winrate), pch = 8, alpha = 0.25, size = 1) +
     coord_flip() +
     theme(legend.position = 'none') +
-    scale_y_continuous(limits = c(0,.65), 
+    scale_y_continuous(limits = c(0,.7), 
                        breaks = c(seq(0,.6,.1)),
                        labels = scales::percent, 
                        sec.axis = dup_axis()) +
     geom_hline(yintercept = .5, alpha = .75, lty = 2) +
-    facet_grid(Role ~ ., scales = "free_y", space = "free_y") +
+    facet_grid(Role ~ ., scales = "free", space = "free") +
     theme_fivethirtyeight() +
     scale_fill_discrete(guide = FALSE) +
     scale_alpha_continuous('Total Games Played', labels = c('0', '1,000', '2,000', '3,000', '4,000'),
@@ -171,7 +187,19 @@ lapply(maps, function(x) {
          caption = '@MattDaviz                                                                                                                   Source: HOTS LOGS') +
     theme(axis.title = element_text(face = 'bold')) +
     xlab('') +
-    ylab('Win Rate')
+    ylab('Win Rate') +
+    geom_segment(data = ann_line, aes(x = ann_line$x, xend = ann_line$xend, y = ann_line$y, yend = ann_line$yend)) +
+    geom_label(data = ann_text, label = paste0("Varian's win rate\nin ", scales::comma(ann_text$games), 
+                                               " games on\n", x$Map.Name[1], "\n is ",
+                                               scales::percent(ann_text$z), ", which is\n", 
+                                               scales::percent(round(ann_text$z - ann_text$y,3)), 
+                                               if(ann_text$z - ann_text$y > 0) {
+                                                 " better"
+                                               } else {
+                                                 " worse"
+                                               },
+                                               " than his\noverall win rate"), size = 2.5, 
+               color = 'black', fill = "#F0F0F0")
   
   print(plot)
   dev.off()
@@ -183,7 +211,7 @@ for(i in 1:length(names)) {
   tablesnew[[i]] <- tables[[i]][[4]][,c(2:6)]
   tablesnew[[i]]$hero <- names[[i]]
   # Use a Sys.sleep() command to be nice to a host's domain
-  Sys.sleep(3)
+  #Sys.sleep(3)
 }
 
 m <- readHTMLTable(getURL('https://www.hotslogs.com/sitewide/HeroDetails?Hero=Murky'))
@@ -229,7 +257,7 @@ for(i in 1:length(names)) {
   tablesnew[[i]] <- tables[[i]][[5]][,c(2:6)]
   tablesnew[[i]]$hero <- names[[i]]
   # Use a Sys.sleep() command to be nice to a host's domain
-  Sys.sleep(3)
+  #Sys.sleep(3)
 }
 
 m <- readHTMLTable(getURL('https://www.hotslogs.com/sitewide/HeroDetails?Hero=Murky'))
@@ -341,3 +369,85 @@ plot <- ggplot(data = win.percent[win.percent$hero=='Artanis',], aes(x = subrole
   theme(axis.ticks.y = element_blank())
 
 plot + coord_polar() + theme_fivethirtyeight() + RadarTheme
+
+boe <- left_join(boe, test[,c(1,5)], by = 'hero')
+colnames(boe)[7] <- 'avg.winrate'
+
+ann_text <- data.frame(Win.Percent.x = .65, hero = 'Li-Ming', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = boe$avg.winrate[boe$hero == 'Li-Ming'], z = boe$Win.Percent.x[boe$hero == "Li-Ming"], games = boe$Games.Played[boe$hero == "Li-Ming"])
+
+ann_line <- data.frame(hero = 'Li-Ming', x = 'Li-Ming', xend = 'Li-Ming', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = boe$Win.Percent.x[boe$hero == 'Li-Ming'] * 1.025, yend = .625, Win.Percent.x = boe$Win.Percent.x[boe$hero=='Li-Ming'])
+
+# Plot
+plot <- ggplot(data = is, aes(x = hero, y = Win.Percent.x, fill = Role, group = Role),show.legend = FALSE) +
+  geom_bar(aes(alpha = Games.Played), stat = 'identity', width = 0.5, color = 'grey75', show.legend = TRUE) +
+  geom_point(data = other, aes(x = hero, y = Win.Percent.y, pch = Map.Name), alpha = 0.25,  size = 1, show.legend = TRUE) +
+  coord_flip() +
+  theme(legend.position = 'none') +
+  scale_y_continuous(limits = c(0,.7), 
+                     breaks = c(seq(0,.6,.1)),
+                     labels = scales::percent, 
+                     sec.axis = dup_axis()) +
+  geom_hline(yintercept = .5, alpha = .75, lty = 2) +
+  facet_grid(Role ~ ., scales = "free", space = "free") +
+  theme_fivethirtyeight() +
+  scale_fill_discrete(guide = FALSE) +
+  scale_shape_discrete(guide = FALSE) +
+  scale_alpha_continuous('Total Games Played', labels = c('0', '1,000', '2,000', '3,000', '4,000'),
+                         breaks = c(0,1000,2000,3000,4000), 
+                         limits = c(0,4000)) +
+  labs(title = paste0('Hero league win rate on '),
+       subtitle = paste0('Hero league win rate across all leagues for the last 7 days.\nLast update: ', 
+                         Sys.time(), 
+                         ' CST.'),
+       caption = '@MattDaviz                                                                                                                   Source: HOTS LOGS') +
+  theme(axis.title = element_text(face = 'bold')) +
+  xlab('') +
+  ylab('Win Rate') +
+  geom_segment(data = ann_line, aes(x = ann_line$x, xend = ann_line$xend, y = ann_line$y, yend = ann_line$yend)) +
+  geom_label(data = ann_text, label = paste0("Li-Ming's win rate\nin ", scales::comma(ann_text$games), " games on\nTomb of the Spider Queen\nis ", scales::percent(ann_text$z), ", which is\n", scales::percent(round(ann_text$z - ann_text$y,3)), 
+                                             if(ann_text$z - ann_text$y > 0) {
+                                               " better"
+                                             } else {
+                                               " worse"
+                                             },
+                                             " than his\noverall win rate"), size = 2.5, color = 'black', fill = "#F0F0F0")
+  
+plot
+
+gt <- ggplot_gtable(ggplot_build(plot))
+gt$layout$clip[gt$layout$name=="panel"] <- "off"
+grid.draw(gt)
+
+
+mapdata <- left_join(mapdata, test[,c(1,5)], by = 'hero')
+
+mapdata %>%
+  group_by(Map.Name) %>%
+  summarize(correlation = cor(Win.Percent.y, Win.Percent.x)) %>%
+  arrange(desc(correlation))
+
+ggplot(mapdata, aes(x = Win.Percent.x, y = Win.Percent.y)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)
+
+lapply(maps, function(x) ggplot(data = x, aes(x = Win.Percent.x, y = Win.Percent.y)) +
+         geom_point() +
+         geom_smooth(method = 'lm', se = FALSE) +
+         labs(title = x$Map.Name))
+
+# Order data
+is <- is %>%
+  arrange(Win.Percent.x)
+is$hero <- factor(is$hero, levels = is$hero)
+is$Role <- factor(is$Role, levels = c('Warrior', 'Support', 'Specialist', 'Assassin'))
+
+other <- is
+
+mapdata %>%
+  group_by(hero) %>% 
+  summarize(mean = mean(Win.Percent.x),
+            sd = sd(Win.Percent.x)) %>% 
+  arrange(sd)
+
+mapdata %>%
+  subset(hero == 'Varian')
