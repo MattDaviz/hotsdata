@@ -95,17 +95,19 @@ mapdata <- mapdata %>%
 
 # Subset mapdata based on map
 boe <- mapdata[mapdata$Map.Name == 'Battlefield of Eternity',]
-got <- mapdata[mapdata$Map.Name == 'Garden of Terror',]
 bhb <- mapdata[mapdata$Map.Name == "Blackheart's Bay",]
 bh <- mapdata[mapdata$Map.Name == 'Braxis Holdout',]
-whj <- mapdata[mapdata$Map.Name == 'Warhead Junction',]
-tod <- mapdata[mapdata$Map.Name == 'Towers of Doom',]
-hm <- mapdata[mapdata$Map.Name == 'Haunted Mines',]
-ds <- mapdata[mapdata$Map.Name == 'Dragon Shire',]
-st <- mapdata[mapdata$Map.Name == 'Sky Temple',]
-is <- mapdata[mapdata$Map.Name == 'Infernal Shrines',]
 ch <- mapdata[mapdata$Map.Name == 'Cursed Hollow',]
+ds <- mapdata[mapdata$Map.Name == 'Dragon Shire',]
+got <- mapdata[mapdata$Map.Name == 'Garden of Terror',]
+hm <- mapdata[mapdata$Map.Name == 'Haunted Mines',]
+is <- mapdata[mapdata$Map.Name == 'Infernal Shrines',]
+st <- mapdata[mapdata$Map.Name == 'Sky Temple',]
 tosq <- mapdata[mapdata$Map.Name == 'Tomb of the Spider Queen',]
+tod <- mapdata[mapdata$Map.Name == 'Towers of Doom',]
+whj <- mapdata[mapdata$Map.Name == 'Warhead Junction',]
+
+
 
 # Set up list of maps mapdata frames to loop over for plotting
 maps <- list(boe, got, bhb, bh, whj, tod, hm, ds, st, is, ch, tosq)
