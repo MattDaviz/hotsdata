@@ -120,3 +120,7 @@ ggplot(other, aes(x = Win.Percent.x, y = Win.Percent.y, label = hero)) +
   theme(axis.title = element_text(face = 'bold')) +
   xlab('Map Win Rate') +
   ylab('Overall Win Rate')
+
+bhb <- as.data.frame(bhb)
+str(bhb)
+str(boe)
