@@ -124,3 +124,8 @@ ggplot(other, aes(x = Win.Percent.x, y = Win.Percent.y, label = hero)) +
 bhb <- as.data.frame(bhb)
 str(bhb)
 str(boe)
+
+bhb %>%
+  group_by(hero) %>%
+  summarize(mean.wr = mean(Win.Percent),
+            sd.wr = sd(Win.Percent))

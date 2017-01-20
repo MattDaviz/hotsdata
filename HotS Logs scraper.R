@@ -142,23 +142,118 @@ lapply(maps, function(x) {
   dev.off()
 })
 
+# Set list of data frames
+mapsplus <- list(bh, bhb, boe, ch, ds, got, hm, is, st, tod, tosq, wj)
+
 # Set working directory to Dropbox folder
 setwd('C://Users//mattd//Dropbox//HotS//Hero WR x Map.Name//geom_bar')
 
-# Loop for alternative plot
-lapply(maps, function(x) {
+# Loop for alternative plot - Platinum, Diamond, Master
+lapply(mapsplus, function(x) {
+  
   # Create unique output filename
-  output_filename <- paste0('WR on ', x$Map.Name,".jpeg")
+  output_filename <- paste0('Higher leagues WR on ', x$Map.Name,".jpeg")
   
   # Open the file for the plot to be written to
   jpeg(output_filename, height = 3150, width = 2400, res = 300, quality = 400)
+  
+  x <- left_join(x, overallplus[,c(1,5)], by = 'hero')
+  
+  x$Win.Percent <- gsub('%', '', x$Win.Percent)
+  x$Games.Played <- as.numeric(as.character(x$Games.Played))
+  x$Win.Percent <- as.numeric(as.character(x$Win.Percent)) * .01
+  x$hero <- as.factor(x$hero)
+  x$avg.winrate <- gsub('%', '', as.character(x$avg.winrate))
+  x$avg.winrate <- as.numeric(as.character(x$avg.winrate)) * .01
+  
+  ann_text <- data.frame(Win.Percent = .65, hero = 'Thrall', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$avg.winrate[x$hero == 'Thrall'], z = x$Win.Percent[x$hero == "Thrall"], games = x$Games.Played[x$hero == "Thrall"])
+  
+  ann_line <- data.frame(hero = 'Thrall', x = 'Thrall', xend = 'Thrall', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$Win.Percent[x$hero == 'Thrall'] * 1.05, yend = .625, Win.Percent = x$Win.Percent[x$hero=='Thrall'])
 
-  x <- left_join(x, test[,c(1,5)], by = 'hero')
-  colnames(x) <- c('Map.Name', 'Games.Played', 'Win.Percent', 'hero', 'Role', 'Specialty', 'avg.winrate')
+  # Order data
+  x <- x %>%
+    arrange(Win.Percent)
+  x$hero <- factor(x$hero, levels = x$hero)
   
-  ann_text <- data.frame(Win.Percent = .65, hero = 'Varian', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$avg.winrate[x$hero == 'Varian'], z = x$Win.Percent[x$hero == "Varian"], games = x$Games.Played[x$hero == "Varian"])
+  # Plot
+  plot <- ggplot(data = x, aes(x = hero, y = Win.Percent, fill = Role, group = Role)) +
+    geom_bar(aes(alpha = Games.Played), stat = 'identity', width = 0.5, color = 'grey75') +
+    geom_point(aes(x = hero, y = avg.winrate, shape = Map.Name), alpha = 0.25, size = 1) +
+    coord_flip() +
+    theme(legend.position = 'none') +
+    scale_y_continuous(limits = c(0,.7), 
+                       breaks = c(seq(0,.6,.1)),
+                       labels = scales::percent, 
+                       sec.axis = dup_axis()) +
+    geom_hline(yintercept = .5, alpha = .75, lty = 2) +
+    facet_grid(Role ~ ., scales = "free", space = "free") +
+    theme_fivethirtyeight() +
+    scale_fill_discrete(guide = FALSE) +
+    scale_shape_discrete('Overall Hero Win Rate', labels = c('')) +
+    scale_alpha_continuous('Total Games Played', labels = c('0  ', '500  ', '1,000  ', '1,500  ', '2,000  ',
+                                                            '2,500  ', '3,000  '),
+                                                            breaks = c(0,500,1000,1500,2000,2500,3000), 
+                                                            limits = c(0,3000)) +
+    labs(title = paste0('Hero league win rate on ', x$Map.Name),
+         subtitle = paste0('Hero league win rate across Platinum, Diamond, and Master leagues for the last 7 days.\nLast update: ', 
+                           Sys.time(), 
+                           ' CST.'),
+         caption = '@MattDaviz                                                                                                                   Source: HOTS LOGS') +
+    theme(axis.title = element_text(face = 'bold')) +
+    xlab('') +
+    ylab('Win Rate') +
+    geom_segment(data = ann_line, aes(x = ann_line$x, xend = ann_line$xend, y = ann_line$y, yend = ann_line$yend)) +
+    geom_label(data = ann_text, label = paste0("Thrall's win rate\nin ", scales::comma(ann_text$games), 
+                                               " games on\n", x$Map.Name[1], "\n is ",
+                                               scales::percent(ann_text$z), ", which is\n", 
+                                               scales::percent(round(ann_text$z - ann_text$y,3)), 
+                                               if(ann_text$z - ann_text$y > 0) {
+                                                 " better"
+                                               } else {
+                                                 " worse"
+                                               },
+                                               " than his\noverall win rate"), size = 2.5, 
+               color = 'black', fill = "#F0F0F0") +
+    guides(shape = guide_legend(override.aes= list(color = 'black'))) +
+    guides(alpha = guide_legend(byrow = TRUE, nrow = 1, override.aes = list(fill = '#C77CFF'))) +
+    theme(legend.position = 'bottom',
+          legend.box = 'vertical',
+          legend.key = element_rect(colour = 'grey75', size = .5, linetype = 'solid'),
+          axis.title = element_text(face = 'bold'),
+          legend.spacing = unit(.05, 'line'))
   
-  ann_line <- data.frame(hero = 'Varian', x = 'Varian', xend = 'Varian', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$Win.Percent[x$hero == 'Varian'] * 1.08, yend = .625, Win.Percent = x$Win.Percent[x$hero=='Varian'])
+  print(plot)
+  dev.off()
+})
+
+# Set up list of maps mapdata frames to loop over for plotting
+mapsminus <- list(bhminus, bhbminus, boeminus, chminus, dsminus, gotminus, hmminus, isminus, stminus, todminus,
+             tosqminus, wjminus)
+
+# Set working directory to Dropbox folder
+setwd('C://Users//mattd//Dropbox//HotS//Hero WR x Map.Name//geom_bar')
+
+# Loop for alternative plot - Bronze, Silver, Gold
+lapply(mapsminus, function(x) {
+  
+  # Create unique output filename
+  output_filename <- paste0('Lower leagues WR on ', x$Map.Name,".jpeg")
+  
+  # Open the file for the plot to be written to
+  jpeg(output_filename, height = 3150, width = 2400, res = 300, quality = 400)
+  
+  x <- left_join(x, overallminus[,c(1,5)], by = 'hero')
+  
+  x$Win.Percent <- gsub('%', '', x$Win.Percent)
+  x$Games.Played <- as.numeric(as.character(x$Games.Played))
+  x$Win.Percent <- as.numeric(as.character(x$Win.Percent)) * .01
+  x$hero <- as.factor(x$hero)
+  x$avg.winrate <- gsub('%', '', as.character(x$avg.winrate))
+  x$avg.winrate <- as.numeric(as.character(x$avg.winrate)) * .01
+  
+  ann_text <- data.frame(Win.Percent = .65, hero = 'Thrall', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$avg.winrate[x$hero == 'Thrall'], z = x$Win.Percent[x$hero == "Thrall"], games = x$Games.Played[x$hero == "Thrall"])
+  
+  ann_line <- data.frame(hero = 'Thrall', x = 'Thrall', xend = 'Thrall', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$Win.Percent[x$hero == 'Thrall'] * 1.05, yend = .625, Win.Percent = x$Win.Percent[x$hero=='Thrall'])
   
   # Order data
   x <- x %>%
@@ -180,11 +275,12 @@ lapply(maps, function(x) {
     theme_fivethirtyeight() +
     scale_fill_discrete(guide = FALSE) +
     scale_shape_discrete('Overall Hero Win Rate', labels = c('')) +
-    scale_alpha_continuous('Total Games Played', labels = c('0', '1,000', '2,000', '3,000', '4,000'),
-                                                            breaks = c(0,1000,2000,3000,4000), 
-                                                            limits = c(0,4000)) +
+    scale_alpha_continuous('Total Games Played', labels = c('0  ', '500  ', '1,000  ', '1,500  ', '2,000  ',
+                                                            '2,500  ', '3,000  '),
+                           breaks = c(0,500,1000,1500,2000,2500,3000), 
+                           limits = c(0,3000)) +
     labs(title = paste0('Hero league win rate on ', x$Map.Name),
-         subtitle = paste0('Hero league win rate across all leagues for the last 7 days.\nLast update: ', 
+         subtitle = paste0('Hero league win rate across Bronze, Silver, and Gold leagues for the last 7 days.\nLast update: ', 
                            Sys.time(), 
                            ' CST.'),
          caption = '@MattDaviz                                                                                                                   Source: HOTS LOGS') +
@@ -192,7 +288,7 @@ lapply(maps, function(x) {
     xlab('') +
     ylab('Win Rate') +
     geom_segment(data = ann_line, aes(x = ann_line$x, xend = ann_line$xend, y = ann_line$y, yend = ann_line$yend)) +
-    geom_label(data = ann_text, label = paste0("Varian's win rate\nin ", scales::comma(ann_text$games), 
+    geom_label(data = ann_text, label = paste0("Thrall's win rate\nin ", scales::comma(ann_text$games), 
                                                " games on\n", x$Map.Name[1], "\n is ",
                                                scales::percent(ann_text$z), ", which is\n", 
                                                scales::percent(round(ann_text$z - ann_text$y,3)), 
@@ -204,7 +300,7 @@ lapply(maps, function(x) {
                                                " than his\noverall win rate"), size = 2.5, 
                color = 'black', fill = "#F0F0F0") +
     guides(shape = guide_legend(override.aes= list(color = 'black'))) +
-    guides(alpha = guide_legend(override.aes = list(fill = '#C77CFF'))) +
+    guides(alpha = guide_legend(byrow = TRUE, nrow = 1, override.aes = list(fill = '#C77CFF'))) +
     theme(legend.position = 'bottom',
           legend.box = 'vertical',
           legend.key = element_rect(colour = 'grey75', size = .5, linetype = 'solid'),
@@ -412,9 +508,9 @@ lapply(maps, function(x) {
   
 
 
-  ann_text <- data.frame(Win.Percent = .65, hero = 'Varian', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$avg.winrate[x$hero == 'Varian'], z = x$Win.Percent[x$hero == "Varian"], games = x$Games.Played[x$hero == "Varian"])
+  ann_text <- data.frame(Win.Percent = .65, hero = 'Raynor', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$avg.winrate[x$hero == 'Raynor'], z = x$Win.Percent[x$hero == "Raynor"], games = x$Games.Played[x$hero == "Raynor"])
   
-  ann_line <- data.frame(hero = 'Varian', x = 'Varian', xend = 'Varian', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$Win.Percent[x$hero == 'Varian'] * 1.08, yend = .625, Win.Percent = x$Win.Percent[x$hero=='Varian'])
+  ann_line <- data.frame(hero = 'Raynor', x = 'Raynor', xend = 'Raynor', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$Win.Percent[x$hero == 'Raynor'] * 1.08, yend = .625, Win.Percent = x$Win.Percent[x$hero=='Raynor'])
   
   # Order data
   x <- x %>%
@@ -470,73 +566,3 @@ lapply(maps, function(x) {
   print(plot)
   dev.off()
 })
-
-lapply(maps, function(x) {str(x)})
-
-bhbtest <- left_join(bhb, overallplus[,c(1,5)], by = 'hero')
-bhbtest$Map.Name <- as.factor(bhbtest$Map.Name)
-x <- left_join(bhbtest, overallplus[,c(1,5)], by = 'hero')
-
-# Clean up scraped mapdata
-#bhbtest$Games.Played <- gsub(',', '', as.character(bhbtest$Games.Played))
-bhbtest$Win.Percent <- gsub('%', '', bhbtest$Win.Percent)
-bhbtest$Games.Played <- as.numeric(as.character(bhbtest$Games.Played))
-bhbtest$Win.Percent <- as.numeric(as.character(bhbtest$Win.Percent)) * .01
-bhbtest$hero <- as.factor(bhbtest$hero)
-bhbtest$avg.winrate <- gsub('%', '', as.character(bhbtest$avg.winrate))
-bhbtest$avg.winrate <- as.numeric(as.character(bhbtest$avg.winrate)) * .01
-
-
-getwd()
-warnings()
-
-bhbtest <- bhbtest %>% 
-  arrange(Win.Percent)
-bhbtest$hero <- factor(bhbtest$hero, levels = bhbtest$hero)
-
-
-plot <- ggplot(data = bhbtest, aes(x = hero, y = Win.Percent, fill = Role, group = Role)) +
-  geom_bar(aes(alpha = Games.Played), stat = 'identity', width = 0.5, color = 'grey75') +
-  geom_point(aes(x = hero, y = avg.winrate, shape = Map.Name), alpha = 0.25, size = 1) +
-  coord_flip() +
-  theme(legend.position = 'none') +
-  scale_y_continuous(limits = c(0,.7), 
-                     breaks = c(seq(0,.6,.1)),
-                     labels = scales::percent, 
-                     sec.axis = dup_axis()) +
-  geom_hline(yintercept = .5, alpha = .75, lty = 2) +
-  facet_grid(Role ~ ., scales = "free", space = "free") +
-  theme_fivethirtyeight() +
-  scale_fill_discrete(guide = FALSE) +
-  scale_shape_discrete('Overall Hero Win Rate', labels = c('')) +
-  scale_alpha_continuous('Total Games Played', labels = c('0', '1,000', '2,000', '3,000', '4,000'),
-                         breaks = c(0,1000,2000,3000,4000), 
-                         limits = c(0,4000)) +
-  labs(title = paste0('Hero league win rate on ', bhbtest$Map.Name),
-       subtitle = paste0('Hero league win rate across all leagues for the last 7 days.\nLast update: ', 
-                         Sys.time(), 
-                         ' CST.'),
-       caption = '@MattDaviz                                                                                                                   Source: HOTS LOGS') +
-  theme(axis.title = element_text(face = 'bold')) +
-  xlab('') +
-  ylab('Win Rate') +
-  geom_segment(data = ann_line, aes(x = ann_line$x, xend = ann_line$xend, y = ann_line$y, yend = ann_line$yend)) +
-  #geom_label(data = ann_text, label = paste0("Varian's win rate\nin ", scales::comma(ann_text$games), 
-  #                                           " games on\n", bhbtest$Map.Name[1], "\n is ",
-  #                                           scales::percent(ann_text$z), ", which is\n", 
-  #                                           scales::percent(round(ann_text$z - ann_text$y,3)), 
-  #                                           if(ann_text$z - ann_text$y > 0) {
-  #                                             " better"
-  #                                           } else {
-  #                                             " worse"
-  #                                           },
-  #                                           " than his\noverall win rate"), size = 2.5, 
-  #           color = 'black', fill = "#F0F0F0") +
-  guides(shape = guide_legend(override.aes= list(color = 'black'))) +
-  guides(alpha = guide_legend(override.aes = list(fill = '#C77CFF'))) +
-  theme(legend.position = 'bottom',
-        legend.box = 'vertical',
-        legend.key = element_rect(colour = 'grey75', size = .5, linetype = 'solid'),
-        axis.title = element_text(face = 'bold'),
-        legend.spacing = unit(.05, 'line'))
-plot
