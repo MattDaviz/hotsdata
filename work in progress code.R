@@ -129,3 +129,50 @@ bhb %>%
   group_by(hero) %>%
   summarize(mean.wr = mean(Win.Percent),
             sd.wr = sd(Win.Percent))
+
+lapply(maps, function(x){
+  # Create unique output filename
+  output_filename <- paste0('Higher leagues WR on ', x$Map.Name,".jpeg")
+  
+  # Open the file for the plot to be written to
+  jpeg(output_filename, height = 3150, width = 2400, res = 300, quality = 400)
+  
+  x <- left_join(x, overallplus[,c(1,5)], by = 'hero')
+  
+  x$Win.Percent <- gsub('%', '', x$Win.Percent)
+  x$Games.Played <- as.numeric(as.character(x$Games.Played))
+  x$Win.Percent <- as.numeric(as.character(x$Win.Percent)) * .01
+  x$hero <- as.factor(x$hero)
+  x$avg.winrate <- gsub('%', '', as.character(x$avg.winrate))
+  x$avg.winrate <- as.numeric(as.character(x$avg.winrate)) * .01
+  
+  ggplot(x, aes(x = hero, y = Win.Percent, group = Role, color = Role)) +
+    geom_point() +
+    facet_grid(Role ~ .)
+})
+
+
+bhbtest <- left_join(bhb, overallplus[,c(1,5)], by = 'hero')
+
+bhbtest$Win.Percent <- gsub('%', '', bhbtest$Win.Percent)
+bhbtest$Games.Played <- as.numeric(as.character(bhbtest$Games.Played))
+bhbtest$Win.Percent <- as.numeric(as.character(bhbtest$Win.Percent)) * .01
+bhbtest$hero <- as.factor(bhbtest$hero)
+bhbtest$avg.winrate <- gsub('%', '', as.character(bhbtest$avg.winrate))
+bhbtest$avg.winrate <- as.numeric(as.character(bhbtest$avg.winrate)) * .01
+bhbtest$color <- ifelse((bhbtest$Win.Percent - bhbtest$avg.winrate > 0), 'darkred', 'darkgreen')
+
+
+bhbtest <- bhbtest %>%
+  arrange(Win.Percent)
+bhbtest$hero <- factor(bhbtest$hero, levels = bhbtest$hero)
+
+ggplot(bhbtest, aes(x = hero, y = Win.Percent, group = Role)) +
+  geom_point(aes(alpha = Games.Played)) +
+  #geom_point(aes(x = hero, y = avg.winrate, group = Role, alpha = Games.Played)) +
+  facet_grid(Role ~ ., scales = 'free', space = 'free') +
+  coord_flip() +
+  geom_segment(aes(x = hero, xend = hero, y = Win.Percent, yend = avg.winrate, color = color))  +
+  theme_fivethirtyeight()
+
+

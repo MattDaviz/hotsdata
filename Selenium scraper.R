@@ -308,7 +308,7 @@ colnames(wj) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Per
 Sys.sleep(1)
 
 # Close browser window
-mybrowser$close()
+remDr$close()
 
 #Screen shot
 remDr$screenshot(display = TRUE)
@@ -325,7 +325,7 @@ url <- 'https://www.hotslogs.com/Sitewide/HeroAndMapStatistics'
 remDr$navigate(url)
 Sys.sleep(1)
 
-# Check Platinum, Diamond, and Masters
+# Check Bronze, Silver, and Gold
 dropdown <- remDr$findElement(using = 'css selector', value = "#ComboBoxLeague .rcbActionButton")
 Sys.sleep(1)
 dropdown$clickElement()
@@ -619,4 +619,4 @@ colnames(wjminus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Wi
 Sys.sleep(1)
 
 # Close browser window
-mybrowser$close()
+remDr$close()
