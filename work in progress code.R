@@ -176,3 +176,62 @@ ggplot(bhbtest, aes(x = hero, y = Win.Percent, group = Role)) +
   theme_fivethirtyeight()
 
 
+ann_text <- data.frame(Win.Percent = .65, hero = 'Thrall', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$avg.winrate[x$hero == 'Thrall'], z = x$Win.Percent[x$hero == "Thrall"], games = x$Games.Played[x$hero == "Thrall"])
+
+ann_line <- data.frame(hero = 'Thrall', x = 'Thrall', xend = 'Thrall', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$Win.Percent[x$hero == 'Thrall'] * 1.05, yend = .625, Win.Percent = x$Win.Percent[x$hero=='Thrall'])
+str(bhbtest)
+
+bhbtest$color <- ifelse((bhbtest$Games.Played > 1000), 'black', 
+                        ifelse((bhbtest$Games.Played > 500), 'grey40',
+                               ifelse((bhbtest$Games.Played > 100), 'grey60', 'grey75')))
+
+# Order data
+bhbtest <- bhbtest %>%
+  arrange(Win.Percent)
+bhbtest$hero <- factor(bhbtest$hero, levels = bhbtest$hero)
+bhbtest$Map.Name <- as.factor(bhbtest$Map.Name)
+bhbtest$color <- as.factor(bhbtest$color)
+
+# Plot
+plot <- ggplot(data = bhbtest, aes(x = hero, y = Win.Percent, fill = Role, group = Role)) +
+  geom_bar(aes(alpha = Games.Played), stat = 'identity', width = 0.5, color = 'grey75') +
+  geom_point(aes(x = hero, y = avg.winrate, shape = Map.Name), alpha = 0.25, size = 1) +
+  coord_flip() +
+  theme(legend.position = 'none') +
+  scale_y_continuous(limits = c(0,.7), 
+                     breaks = c(seq(0,.6,.1)),
+                     labels = scales::percent, 
+                     sec.axis = dup_axis()) +
+  geom_hline(yintercept = .5, alpha = .75, lty = 2) +
+  scale_fill_discrete(l = 40) +
+  facet_grid(Role ~ ., scales = "free", space = "free") +
+  theme_fivethirtyeight() +
+  scale_shape_discrete('Overall Hero Win Rate', labels = c('')) +
+  scale_alpha_continuous('Total Games Played', limits = c(0,3000), breaks = c(0,50,100,500,1000),range = c(.25,1)) +
+  labs(title = paste0('Hero league win rate on '),
+       subtitle = paste0('Hero league win rate across Platinum, Diamond, and Master leagues for the last 7 days.\nLast update: ', 
+                         Sys.time(), 
+                         ' CST.'),
+       caption = '@MattDaviz                                                                                                                   Source: HOTS LOGS') +
+  theme(axis.title = element_text(face = 'bold')) +
+  xlab('') +
+  ylab('Win Rate') +
+  guides(shape = guide_legend(override.aes= list(color = 'black'))) +
+  guides(alpha = guide_legend(byrow = TRUE, nrow = 1, override.aes = list(fill = '#F8766D'))) +
+  theme(legend.position = 'bottom',
+        legend.box = 'vertical',
+        legend.key = element_rect(colour = 'grey75', size = .5, linetype = 'solid'),
+        axis.title = element_text(face = 'bold'),
+        legend.spacing = unit(.05, 'line'))
+
+plot
+dev.off()
+
+
+warnings()
+
+bhbtest %>%
+  summarize(mean(Games.Played))
+
+quantile(bhbtest$Games.Played, type = 7)
+?quantile()

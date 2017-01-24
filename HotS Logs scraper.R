@@ -148,6 +148,12 @@ mapsplus <- list(bh, bhb, boe, ch, ds, got, hm, is, st, tod, tosq, wj)
 # Set working directory to Dropbox folder
 setwd('C://Users//mattd//Dropbox//HotS//Hero WR x Map.Name//geom_bar')
 
+translate3_trans <- function() {
+  trans <- function(x) x - .3
+  inv   <- function(x) x + .3
+  trans_new("translate3_trans", trans, inv)
+}  
+
 # Loop for alternative plot - Platinum, Diamond, Master
 lapply(mapsplus, function(x) {
   
@@ -177,23 +183,27 @@ lapply(mapsplus, function(x) {
   
   # Plot
   plot <- ggplot(data = x, aes(x = hero, y = Win.Percent, fill = Role, group = Role)) +
+    geom_hline(yintercept = .45, alpha = .75, lty = 2) +
+    geom_hline(yintercept = .55, alpha = .75, lty = 2) +
     geom_bar(aes(alpha = Games.Played), stat = 'identity', width = 0.5, color = 'grey75') +
     geom_point(aes(x = hero, y = avg.winrate, shape = Map.Name), alpha = 0.25, size = 1) +
     coord_flip() +
     theme(legend.position = 'none') +
-    scale_y_continuous(limits = c(0,.7), 
-                       breaks = c(seq(0,.6,.1)),
+    scale_y_continuous(breaks = c(seq(.3,.7,.1)),
+                       expand = c(0,0),
+                       limits = c(0.3,.7),
                        labels = scales::percent, 
-                       sec.axis = dup_axis()) +
-    geom_hline(yintercept = .5, alpha = .75, lty = 2) +
+                       sec.axis = dup_axis(),
+                       trans="translate3") +
     facet_grid(Role ~ ., scales = "free", space = "free") +
     theme_fivethirtyeight() +
     scale_fill_discrete(guide = FALSE) +
     scale_shape_discrete('Overall Hero Win Rate', labels = c('')) +
-    scale_alpha_continuous('Total Games Played', labels = c('0  ', '500  ', '1,000  ', '1,500  ', '2,000  ',
-                                                            '2,500  ', '3,000  '),
-                                                            breaks = c(0,500,1000,1500,2000,2500,3000), 
-                                                            limits = c(0,3000)) +
+    scale_alpha_continuous('Total Games Played', 
+                           #labels = c('0  ', '500  ', '1,000  ', '1,500  ', '2,000  ','2,500  ', '3,000  '),
+                           #breaks = c(0,500,1000,1500,2000,2500,3000),
+                           breaks = c(0,500,1000),
+                           limits = c(0,3000) ) +
     labs(title = paste0('Hero league win rate on ', x$Map.Name),
          subtitle = paste0('Hero league win rate across Platinum, Diamond, and Master leagues for the last 7 days.\nLast update: ', 
                            Sys.time(), 
@@ -262,23 +272,27 @@ lapply(mapsminus, function(x) {
   
   # Plot
   plot <- ggplot(data = x, aes(x = hero, y = Win.Percent, fill = Role, group = Role)) +
+    geom_hline(yintercept = .45, alpha = .75, lty = 2) +
+    geom_hline(yintercept = .55, alpha = .75, lty = 2) +
     geom_bar(aes(alpha = Games.Played), stat = 'identity', width = 0.5, color = 'grey75') +
     geom_point(aes(x = hero, y = avg.winrate, shape = Map.Name), alpha = 0.25, size = 1) +
     coord_flip() +
     theme(legend.position = 'none') +
-    scale_y_continuous(limits = c(0,.7), 
-                       breaks = c(seq(0,.6,.1)),
+    scale_y_continuous(breaks = c(seq(.3,.7,.1)),
+                       expand = c(0,0),
+                       limits = c(0.3,.7),
                        labels = scales::percent, 
-                       sec.axis = dup_axis()) +
-    geom_hline(yintercept = .5, alpha = .75, lty = 2) +
+                       sec.axis = dup_axis(),
+                       trans="translate3") +
     facet_grid(Role ~ ., scales = "free", space = "free") +
     theme_fivethirtyeight() +
     scale_fill_discrete(guide = FALSE) +
     scale_shape_discrete('Overall Hero Win Rate', labels = c('')) +
-    scale_alpha_continuous('Total Games Played', labels = c('0  ', '500  ', '1,000  ', '1,500  ', '2,000  ',
-                                                            '2,500  ', '3,000  '),
-                           breaks = c(0,500,1000,1500,2000,2500,3000), 
-                           limits = c(0,3000)) +
+    scale_alpha_continuous('Total Games Played', 
+                           #labels = c('0  ', '500  ', '1,000  ', '1,500  ', '2,000  ','2,500  ', '3,000  '),
+                           #breaks = c(0,500,1000,1500,2000,2500,3000),
+                           breaks = c(0,500,1000),
+                           limits = c(0,3000) ) +
     labs(title = paste0('Hero league win rate on ', x$Map.Name),
          subtitle = paste0('Hero league win rate across Bronze, Silver, and Gold leagues for the last 7 days.\nLast update: ', 
                            Sys.time(), 
@@ -654,5 +668,3 @@ lapply(mapsplus, function(x) {
   print(plot)
   dev.off()
 })
-
-warnings()
