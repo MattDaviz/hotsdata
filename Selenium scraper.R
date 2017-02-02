@@ -12,7 +12,6 @@ remDr$open(silent = T)
 # Set url to navigate to
 url <- 'https://www.hotslogs.com/Sitewide/HeroAndMapStatistics'
 remDr$navigate(url)
-Sys.sleep(1)
 
 # Check Platinum, Diamond, and Master
 dropdown <- remDr$findElement(using = 'css selector', value = "#ComboBoxLeague .rcbActionButton")
@@ -323,7 +322,6 @@ remDr$open(silent = T)
 # Set url to navigate to
 url <- 'https://www.hotslogs.com/Sitewide/HeroAndMapStatistics'
 remDr$navigate(url)
-Sys.sleep(1)
 
 # Check Bronze, Silver, and Gold
 dropdown <- remDr$findElement(using = 'css selector', value = "#ComboBoxLeague .rcbActionButton")
