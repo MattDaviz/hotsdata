@@ -138,9 +138,9 @@ lapply(mapsplus, function(x) {
   x$avg.winrate <- gsub('%', '', as.character(x$avg.winrate))
   x$avg.winrate <- as.numeric(as.character(x$avg.winrate)) * .01
   
-  ann_text <- data.frame(Win.Percent = .65, hero = 'Thrall', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$avg.winrate[x$hero == 'Thrall'], z = x$Win.Percent[x$hero == "Thrall"], games = x$Games.Played[x$hero == "Thrall"])
+  ann_text <- data.frame(Win.Percent = .65, hero = 'Varian', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$avg.winrate[x$hero == 'Varian'], z = x$Win.Percent[x$hero == "Varian"], games = x$Games.Played[x$hero == "Varian"])
   
-  ann_line <- data.frame(hero = 'Thrall', x = 'Thrall', xend = 'Thrall', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$Win.Percent[x$hero == 'Thrall'] * 1.05, yend = .625, Win.Percent = x$Win.Percent[x$hero=='Thrall'])
+  ann_line <- data.frame(hero = 'Varian', x = 'Varian', xend = 'Varian', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$Win.Percent[x$hero == 'Varian'] * 1.05, yend = .625, Win.Percent = x$Win.Percent[x$hero=='Varian'])
 
   # Order data
   x <- x %>%
@@ -173,12 +173,12 @@ lapply(mapsplus, function(x) {
          subtitle = paste0('Hero league win rate across Platinum, Diamond, and Master leagues for the last 7 days.\nLast update: ', 
                            Sys.time(), 
                            ' CST.'),
-         caption = '@MattDaviz                                                                                                                   Source: HOTS LOGS') +
+         caption = '@MattDaviz, ggplots.com                                                                                             Source: HOTS LOGS') +
     theme(axis.title = element_text(face = 'bold')) +
     xlab('') +
     ylab('Win Rate') +
     geom_segment(data = ann_line, aes(x = ann_line$x, xend = ann_line$xend, y = ann_line$y, yend = ann_line$yend)) +
-    geom_label(data = ann_text, label = paste0("Thrall's win rate\nin ", scales::comma(ann_text$games), 
+    geom_label(data = ann_text, label = paste0("Varian's win rate\nin ", scales::comma(ann_text$games), 
                                                " games on\n", x$Map.Name[1], "\n is ",
                                                scales::percent(ann_text$z), ", which is\n", 
                                                scales::percent(round(ann_text$z - ann_text$y,3)), 
@@ -261,7 +261,7 @@ lapply(mapsminus, function(x) {
          subtitle = paste0('Hero league win rate across Bronze, Silver, and Gold leagues for the last 7 days.\nLast update: ', 
                            Sys.time(), 
                            ' CST.'),
-         caption = '@MattDaviz                                                                                                                   Source: HOTS LOGS') +
+         caption = '@MattDaviz, ggplots.com                                                                                             Source: HOTS LOGS') +
     theme(axis.title = element_text(face = 'bold')) +
     xlab('') +
     ylab('Win Rate') +
