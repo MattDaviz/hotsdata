@@ -33,7 +33,8 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 overallplus <- as.data.frame(test[3])
 overallplus <- overallplus[,2:9]
-colnames(overallplus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'avg.winrate', 'Delta', 'Role', 'Specialty')
+overallplus$Map.Name <- 'Overall'
+colnames(overallplus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'avg.winrate', 'Delta', 'Role', 'Specialty', 'Map.Name')
 Sys.sleep(1)
 
 # Battlefield of Eternity - Plat+
@@ -52,7 +53,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 boe <- as.data.frame(test[3])
 boe$Map.Name <- 'Battlefield of Eternity'
-boe <- boe[,2:10]
+boe <- boe[,c(2:9,11)]
 colnames(boe) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                  'Map.Name')
 Sys.sleep(1)
@@ -77,7 +78,7 @@ test <- readHTMLTable(doc)
 Sys.sleep(1)
 bhb <- as.data.frame(test[3])
 bhb$Map.Name <- "Blackheart's Bay"
-bhb <- bhb[,2:10]
+bhb <- bhb[,c(2:9,11)]
 colnames(bhb) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                  'Map.Name')
 Sys.sleep(1)
@@ -101,7 +102,7 @@ test <- readHTMLTable(doc)
 Sys.sleep(1)
 bh <- as.data.frame(test[3])
 bh$Map.Name <- 'Braxis Holdout'
-bh <- bh[,2:10]
+bh <- bh[,c(2:9,11)]
 colnames(bh) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                  'Map.Name')
 Sys.sleep(1)
@@ -110,20 +111,20 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-chhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 4) and parent::*)]//label")
+chhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 5) and parent::*)]//label")
 Sys.sleep(1)
 chhl$clickElement()
 bhhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 3) and parent::*)]//label")
 Sys.sleep(1)
 bhhl$clickElement()
 maphl$clickElement()
-Sys.sleep(20)
+Sys.sleep(30)
 
 doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 ch <- as.data.frame(test[3])
 ch$Map.Name <- 'Cursed Hollow'
-ch <- ch[,2:10]
+ch <- ch[,c(2:9,11)]
 colnames(ch) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                  'Map.Name')
 Sys.sleep(1)
@@ -132,10 +133,10 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-dshl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 5) and parent::*)]//label")
+dshl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 6) and parent::*)]//label")
 Sys.sleep(1)
 dshl$clickElement()
-chhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 4) and parent::*)]//label")
+chhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 5) and parent::*)]//label")
 Sys.sleep(1)
 chhl$clickElement()
 maphl$clickElement()
@@ -145,7 +146,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 ds <- as.data.frame(test[3])
 ds$Map.Name <- 'Dragon Shire'
-ds <- ds[,2:10]
+ds <- ds[,c(2:9,11)]
 colnames(ds) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                  'Map.Name')
 Sys.sleep(1)
@@ -154,10 +155,10 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-gothl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 6) and parent::*)]//label")
+gothl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 7) and parent::*)]//label")
 Sys.sleep(1)
 gothl$clickElement()
-dshl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 5) and parent::*)]//label")
+dshl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 6) and parent::*)]//label")
 Sys.sleep(1)
 dshl$clickElement()
 maphl$clickElement()
@@ -169,7 +170,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 got <- as.data.frame(test[3])
 got$Map.Name <- 'Garden of Terror'
-got <- got[,2:10]
+got <- got[,c(2:9,11)]
 colnames(got) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                  'Map.Name')
 Sys.sleep(1)
@@ -178,10 +179,10 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-hmhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 7) and parent::*)]//label")
+hmhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 8) and parent::*)]//label")
 Sys.sleep(1)
 hmhl$clickElement()
-gothl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 6) and parent::*)]//label")
+gothl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 7) and parent::*)]//label")
 Sys.sleep(1)
 gothl$clickElement()
 maphl$clickElement()
@@ -191,7 +192,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 hm <- as.data.frame(test[3])
 hm$Map.Name <- 'Haunted Mines'
-hm <- hm[,2:10]
+hm <- hm[,c(2:9,11)]
 colnames(hm) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                  'Map.Name')
 Sys.sleep(1)
@@ -200,10 +201,10 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-ishl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 8) and parent::*)]//label")
+ishl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 9) and parent::*)]//label")
 Sys.sleep(1)
 ishl$clickElement()
-hmhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 7) and parent::*)]//label")
+hmhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 8) and parent::*)]//label")
 Sys.sleep(1)
 hmhl$clickElement()
 maphl$clickElement()
@@ -213,7 +214,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 is <- as.data.frame(test[3])
 is$Map.Name <- 'Infernal Shrines'
-is <- is[,2:10]
+is <- is[,c(2:9,11)]
 colnames(is) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                  'Map.Name')
 Sys.sleep(1)
@@ -222,20 +223,20 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-sthl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 11) and parent::*)]//label")
+sthl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 12) and parent::*)]//label")
 Sys.sleep(1)
 sthl$clickElement()
-ishl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 8) and parent::*)]//label")
+ishl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 9) and parent::*)]//label")
 Sys.sleep(1)
 ishl$clickElement()
 maphl$clickElement()
-Sys.sleep(20)
+Sys.sleep(30)
 
 doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 st <- as.data.frame(test[3])
 st$Map.Name <- 'Sky Temple'
-st <- st[,2:10]
+st <- st[,c(2:9,11)]
 colnames(st) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                  'Map.Name')
 Sys.sleep(1)
@@ -244,10 +245,10 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-tosqhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 12) and parent::*)]//label")
+tosqhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 13) and parent::*)]//label")
 Sys.sleep(1)
 tosqhl$clickElement()
-sthl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 11) and parent::*)]//label")
+sthl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 12) and parent::*)]//label")
 Sys.sleep(1)
 sthl$clickElement()
 maphl$clickElement()
@@ -257,7 +258,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 tosq <- as.data.frame(test[3])
 tosq$Map.Name <- 'Tomb of the Spider Queen'
-tosq <- tosq[,2:10]
+tosq <- tosq[,c(2:9,11)]
 colnames(tosq) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                  'Map.Name')
 Sys.sleep(1)
@@ -266,10 +267,10 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-todhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 13) and parent::*)]//label")
+todhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 14) and parent::*)]//label")
 Sys.sleep(1)
 todhl$clickElement()
-tosqhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 12) and parent::*)]//label")
+tosqhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 13) and parent::*)]//label")
 Sys.sleep(1)
 tosqhl$clickElement()
 maphl$clickElement()
@@ -279,7 +280,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 tod <- as.data.frame(test[3])
 tod$Map.Name <- 'Towers of Doom'
-tod <- tod[,2:10]
+tod <- tod[,c(2:9,11)]
 colnames(tod) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                  'Map.Name')
 Sys.sleep(1)
@@ -288,10 +289,10 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-wjhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 14) and parent::*)]//label")
+wjhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 15) and parent::*)]//label")
 Sys.sleep(1)
 wjhl$clickElement()
-todhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 13) and parent::*)]//label")
+todhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 14) and parent::*)]//label")
 Sys.sleep(1)
 todhl$clickElement()
 maphl$clickElement()
@@ -301,7 +302,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 wj <- as.data.frame(test[3])
 wj$Map.Name <- 'Warhead Junction'
-wj <- wj[,2:10]
+wj <- wj[,c(2:9,11)]
 colnames(wj) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                  'Map.Name')
 Sys.sleep(1)
@@ -343,7 +344,8 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 overallminus <- as.data.frame(test[3])
 overallminus <- overallminus[,2:9]
-colnames(overallminus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'avg.winrate', 'Delta', 'Role', 'Specialty')
+overallminus$Map.Name <- 'Overall'
+colnames(overallminus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'avg.winrate', 'Delta', 'Role', 'Specialty', 'Map.Name')
 Sys.sleep(1)
 
 # Battlefield of Eternity - Lower leagues
@@ -362,7 +364,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 boeminus <- as.data.frame(test[3])
 boeminus$Map.Name <- 'Battlefield of Eternity'
-boeminus <- boeminus[,2:10]
+boeminus <- boeminus[,c(2:9,11)]
 colnames(boeminus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                    'Map.Name')
 Sys.sleep(1)
@@ -387,7 +389,7 @@ test <- readHTMLTable(doc)
 Sys.sleep(1)
 bhbminus <- as.data.frame(test[3])
 bhbminus$Map.Name <- "Blackheart's Bay"
-bhbminus <- bhbminus[,2:10]
+bhbminus <- bhbminus[,c(2:9,11)]
 colnames(bhbminus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                    'Map.Name')
 Sys.sleep(1)
@@ -411,7 +413,7 @@ test <- readHTMLTable(doc)
 Sys.sleep(1)
 bhminus <- as.data.frame(test[3])
 bhminus$Map.Name <- 'Braxis Holdout'
-bhminus <- bhminus[,2:10]
+bhminus <- bhminus[,c(2:9,11)]
 colnames(bhminus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                   'Map.Name')
 Sys.sleep(1)
@@ -420,7 +422,7 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-chhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 4) and parent::*)]//label")
+chhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 5) and parent::*)]//label")
 Sys.sleep(1)
 chhl$clickElement()
 bhhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 3) and parent::*)]//label")
@@ -433,7 +435,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 chminus <- as.data.frame(test[3])
 chminus$Map.Name <- 'Cursed Hollow'
-chminus <- chminus[,2:10]
+chminus <- chminus[,c(2:9,11)]
 colnames(chminus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                   'Map.Name')
 Sys.sleep(1)
@@ -442,10 +444,10 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-dshl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 5) and parent::*)]//label")
+dshl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 6) and parent::*)]//label")
 Sys.sleep(1)
 dshl$clickElement()
-chhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 4) and parent::*)]//label")
+chhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 5) and parent::*)]//label")
 Sys.sleep(1)
 chhl$clickElement()
 maphl$clickElement()
@@ -455,7 +457,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 dsminus <- as.data.frame(test[3])
 dsminus$Map.Name <- 'Dragon Shire'
-dsminus <- dsminus[,2:10]
+dsminus <- dsminus[,c(2:9,11)]
 colnames(dsminus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                   'Map.Name')
 Sys.sleep(1)
@@ -464,10 +466,10 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-gothl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 6) and parent::*)]//label")
+gothl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 7) and parent::*)]//label")
 Sys.sleep(1)
 gothl$clickElement()
-dshl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 5) and parent::*)]//label")
+dshl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 6) and parent::*)]//label")
 Sys.sleep(1)
 dshl$clickElement()
 maphl$clickElement()
@@ -479,7 +481,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 gotminus <- as.data.frame(test[3])
 gotminus$Map.Name <- 'Garden of Terror'
-gotminus <- gotminus[,2:10]
+gotminus <- gotminus[,c(2:9,11)]
 colnames(gotminus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                    'Map.Name')
 Sys.sleep(1)
@@ -488,10 +490,10 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-hmhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 7) and parent::*)]//label")
+hmhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 8) and parent::*)]//label")
 Sys.sleep(1)
 hmhl$clickElement()
-gothl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 6) and parent::*)]//label")
+gothl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 7) and parent::*)]//label")
 Sys.sleep(1)
 gothl$clickElement()
 maphl$clickElement()
@@ -501,7 +503,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 hmminus <- as.data.frame(test[3])
 hmminus$Map.Name <- 'Haunted Mines'
-hmminus <- hmminus[,2:10]
+hmminus <- hmminus[,c(2:9,11)]
 colnames(hmminus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                   'Map.Name')
 Sys.sleep(1)
@@ -510,10 +512,10 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-ishl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 8) and parent::*)]//label")
+ishl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 9) and parent::*)]//label")
 Sys.sleep(1)
 ishl$clickElement()
-hmhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 7) and parent::*)]//label")
+hmhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 8) and parent::*)]//label")
 Sys.sleep(1)
 hmhl$clickElement()
 maphl$clickElement()
@@ -523,7 +525,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 isminus <- as.data.frame(test[3])
 isminus$Map.Name <- 'Infernal Shrines'
-isminus <- isminus[,2:10]
+isminus <- isminus[,c(2:9,11)]
 colnames(isminus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                   'Map.Name')
 Sys.sleep(1)
@@ -532,10 +534,10 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-sthl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 11) and parent::*)]//label")
+sthl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 12) and parent::*)]//label")
 Sys.sleep(1)
 sthl$clickElement()
-ishl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 8) and parent::*)]//label")
+ishl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 9) and parent::*)]//label")
 Sys.sleep(1)
 ishl$clickElement()
 maphl$clickElement()
@@ -545,7 +547,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 stminus <- as.data.frame(test[3])
 stminus$Map.Name <- 'Sky Temple'
-stminus <- stminus[,2:10]
+stminus <- stminus[,c(2:9,11)]
 colnames(stminus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                   'Map.Name')
 Sys.sleep(1)
@@ -554,10 +556,10 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-tosqhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 12) and parent::*)]//label")
+tosqhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 13) and parent::*)]//label")
 Sys.sleep(1)
 tosqhl$clickElement()
-sthl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 11) and parent::*)]//label")
+sthl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 12) and parent::*)]//label")
 Sys.sleep(1)
 sthl$clickElement()
 maphl$clickElement()
@@ -567,7 +569,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 tosqminus <- as.data.frame(test[3])
 tosqminus$Map.Name <- 'Tomb of the Spider Queen'
-tosqminus <- tosqminus[,2:10]
+tosqminus <- tosqminus[,c(2:9,11)]
 colnames(tosqminus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                     'Map.Name')
 Sys.sleep(1)
@@ -576,10 +578,10 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-todhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 13) and parent::*)]//label")
+todhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 14) and parent::*)]//label")
 Sys.sleep(1)
 todhl$clickElement()
-tosqhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 12) and parent::*)]//label")
+tosqhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 13) and parent::*)]//label")
 Sys.sleep(1)
 tosqhl$clickElement()
 maphl$clickElement()
@@ -589,7 +591,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 todminus <- as.data.frame(test[3])
 todminus$Map.Name <- 'Towers of Doom'
-todminus <- todminus[,2:10]
+todminus <- todminus[,c(2:9,11)]
 colnames(todminus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                    'Map.Name')
 Sys.sleep(1)
@@ -598,10 +600,10 @@ Sys.sleep(1)
 maphl <- remDr$findElement(using = 'css selector', value = '#ctl00_MainContent_ComboBoxMapName .rcbActionButton')
 Sys.sleep(1)
 maphl$clickElement()
-wjhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 14) and parent::*)]//label")
+wjhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 15) and parent::*)]//label")
 Sys.sleep(1)
 wjhl$clickElement()
-todhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 13) and parent::*)]//label")
+todhl <- remDr$findElement(using = 'xpath', value = "//*[contains(concat( ' ', @class, ' ' ), concat( ' ', 'rcbItem', ' ' )) and (((count(preceding-sibling::*) + 1) = 14) and parent::*)]//label")
 Sys.sleep(1)
 todhl$clickElement()
 maphl$clickElement()
@@ -611,7 +613,7 @@ doc <- htmlParse(remDr$getPageSource()[[1]])
 test <- readHTMLTable(doc)
 wjminus <- as.data.frame(test[3])
 wjminus$Map.Name <- 'Warhead Junction'
-wjminus <- wjminus[,2:10]
+wjminus <- wjminus[,c(2:9,11)]
 colnames(wjminus) <- c('hero', 'Games.Played', 'Games.Banned', 'Popularity', 'Win.Percent', 'Delta', 'Role', 'Specialty',
                   'Map.Name')
 Sys.sleep(1)
