@@ -1,50 +1,39 @@
-# Load data -------
-setwd('C:\\Users\\mattd\\Dropbox\\HotS\\raw data')
-#setwd('C:\\Users\\Matthew\\Dropbox\\HotS\\raw data')
-#setwd('C:\\USers\\Matt\\Dropbox\\HotS\\raw data')
-data <- read.csv('hgc drafts.csv')
-
 # Load libraries------
-library(ggplot2)
-library(ggthemes)
-library(tidyr)
-library(dplyr)
+library(ggplot2); library(ggthemes); library(tidyr); library(dplyr); library(readr)
+
+# Load data -------
+data <- read_csv('.\\data\\hgc drafts.csv')
 
 # Clean Data ------
-test <- gather(data[,c(1,9:22)], variable, value, -region)
+data.long <- gather(data[,c(1,9:22)], variable, value, -region)
 
-library(dplyr)
 na <- test %>% 
   filter(region == 'North America')
-
 eu <- test %>% 
   filter(region == 'Europe')
 
-test <- as.data.frame(test)
-
-text.labels <- test %>% 
+text.labels <- data.long %>% 
   group_by(region, variable) %>% 
-  mutate(games = n())
-
-text.labels <- text.labels %>% 
+  mutate(games = n()) %>% 
   group_by(region, value) %>% 
-  mutate(involvement = n() /games) %>% 
+  mutate(involvement = n() / games) %>% 
   filter(n() > 2)
 
 ann_text <- text.labels %>% 
   distinct(region, value, involvement) 
+
 ann_text <- ann_text[,c(1:3)]
 ann_text$x = 12.5
 #ann_text$x = 10.5
 ann_text$y = .5
 #ann_text$y = .65
 
-test <- test %>% 
+data.long <- data.long %>% 
   group_by(region, value) %>% 
   filter(n() > 2)
 
 # Pick rates by draft position -----
-test %>% 
+data.long %>% 
   group_by(value) %>% 
   summarize(count = n()) %>% 
   arrange(desc(count)) %>% 
@@ -112,15 +101,9 @@ a <- as.data.frame(a)
 
 a$variable <- factor(a$variable, levels = c('ban.1', 'ban.2', 'pick.1', 'pick.2', 'pick.3', 'pick.4', 'pick.5', 'ban.3',
                                             'ban.4', 'pick.6', 'pick.7', 'pick.8', 'pick.9', 'pick.10'))
-#a$region <- gsub('Europe', 'Europe', a$region)
-#a$region <- gsub('North America', 'North America', a$region)
 
 library(ggplot2)
 library(ggthemes)
-
-#a <- a %>% 
-#  filter(value != 'Chen' & value != 'Rexxar' & value != 'Sonya' & value != 'Stitches' & value != 'Cho' & value != 'Arthas' &
-#           value != "Anub'arak")
 
 plot <- a %>% 
 ggplot(aes(x = variable, fill = value, group = value)) +

@@ -1,13 +1,7 @@
-# Load Libraries
-library(plyr)
-library(dplyr)
-library(httr)
-library(RCurl)
-library(tidyr)
-library(ggplot2)
-library(ggthemes)
+# Load Libraries ----
+library(plyr); library(dplyr); library(httr); library(RCurl); library(tidyr); library(ggplot2); library(ggthemes)
 
-# Scrape Heroes Data
+# Scrape Heroes Data ----
 heroes <- 'https://api.masterleague.net/heroes?page_size=100'
 heroes.data <- GET(heroes)
 heroes.data <- content(heroes.data)
@@ -16,7 +10,7 @@ heroes.df <- heroes.df %>%
   select(id, name, role)
 rm(heroes.df)
 
-# Scrape Maps Data
+# Scrape Maps Data ----
 maps <- 'https://api.masterleague.net/maps.json'
 maps.data <- GET(maps)
 maps.data <- content(maps.data)
@@ -27,7 +21,7 @@ maps.df <- maps.df %>%
   select(id, name)
 rm(maps.df)
 
-# Scrape Regions Data
+# Scrape Regions Data ----
 regions <- 'https://api.masterleague.net/regions.json'
 regions.data <- GET(regions)
 regions.data <- content(regions.data)
@@ -37,7 +31,7 @@ regions.df <- as.data.frame(regions.df)
 regions.df <- regions.df %>% 
   select(id, name)
 
-# Scrape Patches Data
+# Scrape Patches Data ----
 patches <- 'https://api.masterleague.net/patches.json'
 patches.data <- GET(patches)
 patches.data <- content(patches.data)
@@ -47,7 +41,7 @@ patches.df <- as.data.frame(patches.df)
 patches.df <- patches.df %>% 
   select(id, name)
 
-# Scrape Teams Data
+# Scrape Teams Data ----
 url <- 'https://api.masterleague.net/teams/?page='
 
     # create the list to hold the tables
@@ -125,7 +119,7 @@ rm(teams6)
 rm(teams7)
 rm(teams8)
 
-# Scrape Players Data
+# Scrape Players Data ----
 url <- 'https://api.masterleague.net/players/?page='
 
     # create the list to hold the tables
@@ -142,7 +136,7 @@ players.df <- players %>%
   select(id, team, region, nickname, realname, country, role)
 rm(players)
 
-# Scrape Tournaments Data
+# Scrape Tournaments Data ----
     # scrape the first page
 url <- 'https://api.masterleague.net/tournaments/?page=1'
 tournament.data <- GET(url)
@@ -173,7 +167,7 @@ test.tournament.gather <- bind_rows(test.tournament.df[,c(1:5,8:9)],
           test.tournament.df[,c(1:5,24:25)]
           )
 
-# Scrape Matches Data
+# Scrape Matches Data ----
 url <- 'https://api.masterleague.net/matches/?page='
 
     # create the list to hold the tables
@@ -297,7 +291,7 @@ colnames(matches.df.map.pick.test)[26:46] <- c('id', 'date', 'patch', 'tournamen
 matches.df.map.pick <- matches.df.map.pick.test[,c(26:34, 10:13, 35:46)]
 rm(matches.df.map.pick.test)
 
-# History of All Player Matches
+# History of All Player Matches ----
     # create groups for rbind from first pick drafts
 group1 <- matches.df.first.pick[,c(1:13, 15:16)]
 group2 <- matches.df.first.pick[,c(1:13, 17:18)]
@@ -342,7 +336,7 @@ rm(group10)
     # change variables to match real class
 player.hero.history.df$date <- as.Date(player.hero.history.df$date)
 
-# Analysis 
+# Analysis ----
 player.hero.history.df %>% 
   filter(tournament == 'HGC North America') %>% 
   group_by(player, hero) %>% 
