@@ -1,6 +1,6 @@
 # Load libraries ----
 library(XML); library(RCurl); library(plyr); library(stringr); library(ggplot2); library(ggthemes); library(dplyr); library(tidyr); library(ggrepel)
-library(reshape2); library(grid); library(scales); library(jpeg); library(png); library(grid)
+library(reshape2); library(grid); library(scales); library(jpeg); library(png); library(grid); library(RSelenium)
 
 # Overall Hero Win Rates - Regardless of HL Rank ----
     # Get all hero roles and subroles
@@ -21,7 +21,7 @@ overall.win.rate <- overall.win.rate %>%
          delta.Win.Percent = as.numeric(gsub('%', '', delta.Win.Percent)))
 
 # Selenium Scraper for HL data by division ----
-    # Higher level data (Platinum, Diamond, Master)
+    # Higher level data (Platinum, Diamond, Master) ----
 
     # Set up and open phantomjs browser (NOTE: YOU MUST INSTALL PHANTOMJS AND PUT THE PATH TO THE EXECUTABLE FILE IN YOUR SYTEM PATH       AND THEN RESTART RSTUDIO)
 pJS <- phantom()
@@ -332,7 +332,7 @@ remDr$close()
     # Screen shot
 #remDr$screenshot(display = TRUE)
 
-    # Lower level data (Bronze, Silver, Gold)
+    # Lower level data (Bronze, Silver, Gold) ----
 
     # Set up and open phantomjs browser
 pJS <- phantom()
@@ -674,9 +674,9 @@ lapply(mapsplus, function(x) {
     rowwise() %>% 
     mutate(stderror = se(rnorm(n = as.numeric(as.character(Games.Played)), mean = as.numeric(as.character(gsub('%','',Win.Percent))))))
   
-  ann_text <- data.frame(Win.Percent = .85, hero = 'Falstad', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$avg.winrate[x$hero == 'Falstad'], z = x$Win.Percent[x$hero == "Falstad"], games = x$Games.Played[x$hero == "Falstad"], stderror = x$stderror[x$hero == 'Falstad'])
+  ann_text <- data.frame(Win.Percent = .85, hero = 'Varian', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$avg.winrate[x$hero == 'Varian'], z = x$Win.Percent[x$hero == "Varian"], games = x$Games.Played[x$hero == "Varian"], stderror = x$stderror[x$hero == 'Varian'])
   
-  ann_line <- data.frame(hero = 'Falstad', x = 'Falstad', xend = 'Falstad', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$Win.Percent[x$hero == 'Falstad'], yend = .85, Win.Percent = x$Win.Percent[x$hero=='Falstad'], stderror = x$stderror[x$hero == 'Falstad'])
+  ann_line <- data.frame(hero = 'Varian', x = 'Varian', xend = 'Varian', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$Win.Percent[x$hero == 'Varian'], yend = .85, Win.Percent = x$Win.Percent[x$hero=='Varian'], stderror = x$stderror[x$hero == 'Varian'])
 
     # Order data
   x <- x %>%
@@ -708,13 +708,13 @@ lapply(mapsplus, function(x) {
          subtitle = paste0('Hero league win rate across Platinum, Diamond, and Master leagues for the last 7 days.\nLast update: ', 
                            Sys.time(), 
                            ' CST.'),
-         caption = '@MattDaviz, ggplots.com                                                                                             Source: HOTS LOGS') +
+         caption = '@ggplots                                                                                                                   Source: HOTS LOGS') +
     theme(axis.title = element_text(face = 'bold')) +
     xlab('') +
     ylab('Win Rate') +
     geom_segment(data = ann_line, aes(x = ann_line$x, xend = ann_line$xend, y = ann_line$y + (2.5*ann_line$stderror), yend = ann_line$yend )) +
     geom_label(data = ann_text, label = paste0("There is a 95% certainty\n",
-                                               "Falstad's win rate on\n",
+                                               "Varian's win rate on\n",
                                                x$Map.Name[1],
                                                "\nis between\n",
                                                scales::percent(round(ann_text$z - (2*ann_text$stderror),3)),
@@ -760,9 +760,9 @@ lapply(mapsminus, function(x) {
     rowwise() %>% 
     mutate(stderror = se(rnorm(n = as.numeric(as.character(Games.Played)), mean = as.numeric(as.character(gsub('%','',Win.Percent))))))
   
-  ann_text <- data.frame(Win.Percent = .85, hero = 'Lunara', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$avg.winrate[x$hero == 'Lunara'], z = x$Win.Percent[x$hero == "Lunara"], games = x$Games.Played[x$hero == "Lunara"], stderror = x$stderror[x$hero == 'Lunara'])
+  ann_text <- data.frame(Win.Percent = .85, hero = "Gul'dan", Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$avg.winrate[x$hero == "Gul'dan"], z = x$Win.Percent[x$hero == "Gul'dan"], games = x$Games.Played[x$hero == "Gul'dan"], stderror = x$stderror[x$hero == "Gul'dan"])
   
-  ann_line <- data.frame(hero = 'Lunara', x = 'Lunara', xend = 'Lunara', Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$Win.Percent[x$hero == 'Lunara'], yend = .85, Win.Percent = x$Win.Percent[x$hero=='Lunara'], stderror = x$stderror[x$hero == 'Lunara'])
+  ann_line <- data.frame(hero = "Gul'dan", x = "Gul'dan", xend = "Gul'dan", Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$Win.Percent[x$hero == "Gul'dan"], yend = .85, Win.Percent = x$Win.Percent[x$hero=="Gul'dan"], stderror = x$stderror[x$hero == "Gul'dan"])
   
     # Order data
   x <- x %>%
@@ -794,13 +794,13 @@ lapply(mapsminus, function(x) {
          subtitle = paste0('Hero league win rate across Bronze, Silver, and Gold leagues for the last 7 days.\nLast update: ', 
                            Sys.time(), 
                            ' CST.'),
-         caption = '@MattDaviz, ggplots.com                                                                                             Source: HOTS LOGS') +
+         caption = '@ggplots                                                                                                                   Source: HOTS LOGS') +
     theme(axis.title = element_text(face = 'bold')) +
     xlab('') +
     ylab('Win Rate') +
     geom_segment(data = ann_line, aes(x = ann_line$x, xend = ann_line$xend, y = ann_line$y + (2.5*ann_line$stderror), yend = ann_line$yend )) +
     geom_label(data = ann_text, label = paste0("There is a 95% certainty\n",
-                                               "Lunara's win rate on\n",
+                                               "Gul'dan's win rate on\n",
                                                x$Map.Name[1],
                                                "\nis between\n",
                                                scales::percent(round(ann_text$z - (2*ann_text$stderror),3)),
