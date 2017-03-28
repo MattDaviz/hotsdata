@@ -2,6 +2,15 @@
 library(jpeg); library(png); library(ggplot2); library(tidyr); library(dplyr); library(grid); library(ggrepel); library(ggthemes)
 library(extrafont)
 
+# Extra data tidying ----
+plat.plus <- rbind(bh, bhb, boe, ch, ds, got, hm, is, st, tod, tosq, wj)
+plat.plus$division <- 'Plat+'
+bronze.plus <- rbind(bhminus, bhbminus, boeminus, chminus, dsminus, gotminus, hmminus, isminus, stminus, todminus, tosqminus, wjminus)
+bronze.plus$division <- 'Bronze+'
+all.division.win.rates <- rbind(plat.plus, bronze.plus)
+
+setwd('C:\\Users\\mattd\\Dropbox\\HotS\\hotsdata')
+
 # Infographic Loop ----
     # Set list of data heroes to include
 heroes.small <- list('Alarak', "Anub'arak", 'Artanis', 'Auriel', 'Brightwing', 'Chromie', 'Cho', 'Diablo', 'E.T.C.', 'Falstad', 'Greymane',
@@ -56,13 +65,17 @@ lapply(heroes.small, function(x) {
     geom_segment(data = y, aes(x = difference, xend = 0, y = Map.Name, yend = Map.Name), color = ifelse(y$difference > 0, 
                                                                                                         'green4', 'red4'),
                  size = 1.25) +
-    geom_text(data = y[which(y$difference <= 0),], aes(x = .005, y = Map.Name, label = Map.Name), family = 'Exo', fontface = 'bold',
+    geom_text(data = y[which(y$difference <= 0),], aes(x = .01, y = Map.Name, label = Map.Name), family = 'Exo', fontface = 'bold',
               hjust = 0, color = 'grey75', size = 4) +
-    geom_text(data = y[which(y$difference > 0),], aes(x = -.005, y = Map.Name, label = Map.Name), fontface = 'bold', color = 'grey75',
+    geom_text(data = y[which(y$difference > 0),], aes(x = -.01, y = Map.Name, label = Map.Name), fontface = 'bold', color = 'grey75',
               family = 'Exo', hjust = 1, size = 4) +
-    geom_text(data = y, aes(x = ifelse(difference > 0, difference + .03, difference - .03), y = Map.Name, 
+    geom_text(data = y, aes(x = ifelse(difference > 0, difference + .04, difference - .04), y = Map.Name, 
                             label = scales::percent(round(difference,3))), family = 'Exo', fontface = 'bold', color = 'white', size = 4) +
-    geom_point(data = y, aes(x = difference, y = Map.Name), color = ifelse(y$difference > 0, 'green4', 'red4'), size = 3) +
+    #geom_point(data = y, aes(x = difference, y = Map.Name), color = ifelse(y$difference > 0, 'green4', 'red4'), size = 3) +
+    geom_point(data = y[which(y$difference > 0),], aes(x = difference, y = Map.Name, size = Games.Played), color = 'green4', 
+               show.legend = FALSE) +
+    geom_point(data = y[which(y$difference <= 0),], aes(x = difference, y = Map.Name, size = Games.Played), color = 'red4', 
+               show.legend = FALSE) +
     annotate('point', x = 0, y = 15, size = 30, pch = 21, color = 'darkgoldenrod2', stroke = 4) +
     annotate('text', label = scales::percent(unique(y$avg.winrate)), x = 0, y = 15, size = 6, color = 'white', family = 'Exo', fontface = 'bold') +
     theme_fivethirtyeight() +
@@ -131,13 +144,17 @@ lapply(heroes.large, function(x) {
     geom_segment(data = y, aes(x = difference, xend = 0, y = Map.Name, yend = Map.Name), color = ifelse(y$difference > 0, 
                                                                                                         'green4', 'red4'),
                  size = 1.25) +
-    geom_text(data = y[which(y$difference <= 0),], aes(x = .005, y = Map.Name, label = Map.Name), family = 'Exo', fontface = 'bold',
+    geom_text(data = y[which(y$difference <= 0),], aes(x = .01, y = Map.Name, label = Map.Name), family = 'Exo', fontface = 'bold',
               hjust = 0, color = 'grey75', size = 4) +
-    geom_text(data = y[which(y$difference > 0),], aes(x = -.005, y = Map.Name, label = Map.Name), fontface = 'bold', color = 'grey75',
+    geom_text(data = y[which(y$difference > 0),], aes(x = -.01, y = Map.Name, label = Map.Name), fontface = 'bold', color = 'grey75',
               family = 'Exo', hjust = 1, size = 4) +
-    geom_text(data = y, aes(x = ifelse(difference > 0, difference + .03, difference - .03), y = Map.Name, 
+    geom_text(data = y, aes(x = ifelse(difference > 0, difference + .04, difference - .04), y = Map.Name, 
                             label = scales::percent(round(difference,3))), family = 'Exo', fontface = 'bold', color = 'white', size = 4) +
-    geom_point(data = y, aes(x = difference, y = Map.Name), color = ifelse(y$difference > 0, 'green4', 'red4'), size = 3) +
+    #geom_point(data = y, aes(x = difference, y = Map.Name), color = ifelse(y$difference > 0, 'green4', 'red4'), size = 3) +
+    geom_point(data = y[which(y$difference > 0),], aes(x = difference, y = Map.Name, size = Games.Played), color = 'green4',
+               show.legend = FALSE) +
+    geom_point(data = y[which(y$difference <= 0),], aes(x = difference, y = Map.Name, size = Games.Played), color = 'red4', 
+               show.legend = FALSE) +
     annotate('point', x = 0, y = 15, size = 30, pch = 21, color = 'darkgoldenrod2', stroke = 4) +
     annotate('text', label = scales::percent(unique(y$avg.winrate)), x = 0, y = 15, size = 6, color = 'white', family = 'Exo', fontface = 'bold') +
     theme_fivethirtyeight() +

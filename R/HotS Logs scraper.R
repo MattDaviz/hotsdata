@@ -760,9 +760,9 @@ lapply(mapsminus, function(x) {
     rowwise() %>% 
     mutate(stderror = se(rnorm(n = as.numeric(as.character(Games.Played)), mean = as.numeric(as.character(gsub('%','',Win.Percent))))))
   
-  ann_text <- data.frame(Win.Percent = .85, hero = "Gul'dan", Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$avg.winrate[x$hero == "Gul'dan"], z = x$Win.Percent[x$hero == "Gul'dan"], games = x$Games.Played[x$hero == "Gul'dan"], stderror = x$stderror[x$hero == "Gul'dan"])
+  ann_text <- data.frame(Win.Percent = .85, hero = "Varian", Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$avg.winrate[x$hero == "Varian"], z = x$Win.Percent[x$hero == "Varian"], games = x$Games.Played[x$hero == "Varian"], stderror = x$stderror[x$hero == "Varian"])
   
-  ann_line <- data.frame(hero = "Gul'dan", x = "Gul'dan", xend = "Gul'dan", Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$Win.Percent[x$hero == "Gul'dan"], yend = .85, Win.Percent = x$Win.Percent[x$hero=="Gul'dan"], stderror = x$stderror[x$hero == "Gul'dan"])
+  ann_line <- data.frame(hero = "Varian", x = "Varian", xend = "Varian", Role = factor('Assassin', levels = c('Assassin', 'Specialist', 'Support', 'Warrior')), y = x$Win.Percent[x$hero == "Varian"], yend = .85, Win.Percent = x$Win.Percent[x$hero=="Varian"], stderror = x$stderror[x$hero == "Varian"])
   
     # Order data
   x <- x %>%
