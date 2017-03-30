@@ -1,4 +1,4 @@
-# Code Manipulation for per Hero Graphs  (IN TESTING) ----
+# Load Libraries ----
 library(jpeg); library(png); library(ggplot2); library(tidyr); library(dplyr); library(grid); library(ggrepel); library(ggthemes)
 library(extrafont)
 
@@ -81,7 +81,7 @@ lapply(heroes.small, function(x) {
     theme_fivethirtyeight() +
     scale_x_continuous(limits = c(-.8, .2)) +
     scale_y_discrete(limits = c('', levels(y$Map.Name), '', '', '', '', '', '')) +
-    annotate('text', label = '@ggplots                                                                                                                                                                Source: HOTS LOGS', x = -.775, y = 1, color = 'grey75', hjust = 0, alpha = 0.5) + 
+    annotate('text', label = paste0('@ggplots                                                                                                                                        Source: HOTS LOGS | Date: ', Sys.Date()), x = -.775, y = 1, color = 'grey75', hjust = 0, alpha = 0.5) + 
     theme(axis.text = element_blank(),
           panel.grid = element_blank(),
           plot.background = element_blank(),
@@ -160,7 +160,7 @@ lapply(heroes.large, function(x) {
     theme_fivethirtyeight() +
     scale_x_continuous(limits = c(-.8, .2)) +
     scale_y_discrete(limits = c('', levels(y$Map.Name), '', '', '', '', '', '')) +
-    annotate('text', label = '@ggplots                                                                                                                                                                Source: HOTS LOGS', x = -.775, y = 1, color = 'grey75', hjust = 0, alpha = 0.5) + 
+    annotate('text', label = paste0('@ggplots                                                                                                                                        Source: HOTS LOGS | Date: ', Sys.Date()), x = -.775, y = 1, color = 'grey75', hjust = 0, alpha = 0.5) + 
     theme(axis.text = element_blank(),
           panel.grid = element_blank(),
           plot.background = element_blank(),
